@@ -5,14 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+import java.util.Map;
+
 @Getter
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NotificationDetails {
-    private Long id;
-    private String notificationType;
-    private String notificationTemplate;
-    private Long categoryId;
-    private String subject;
+public class NotificationRequest {
+    private Long userId;
+    private String notificationCategory;
+    private List<String> notificationType;
+    private Map<String,String> data;
 }

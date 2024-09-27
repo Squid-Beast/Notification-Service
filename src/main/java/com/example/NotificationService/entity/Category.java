@@ -19,6 +19,6 @@ public class Category {
     private boolean isCritical;
     @Column(name = "is_deleted")
     private boolean isDeleted;
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private List<Notification> notificationTemplateList;
 }

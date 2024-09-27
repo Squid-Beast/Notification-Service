@@ -17,5 +17,5 @@ public class CategoryDetails {
     private String name;
     private boolean isCritical;
     private boolean isDeleted;
-    private List<Notification> notificationTemplateList;
+    private List<NotificationDetails> notificationTemplateList;
 }

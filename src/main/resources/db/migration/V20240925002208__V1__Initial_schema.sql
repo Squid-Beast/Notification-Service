@@ -5,10 +5,10 @@ CREATE TABLE category (
     is_deleted BOOLEAN NOT NULL
 );
 
-CREATE TABLE notification (
+CREATE TABLE notification_template (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    notification_type ENUM('SMS', 'E-mail', 'App') NOT NULL,
-    notification_template TEXT NOT NULL,
     category_id BIGINT,
-    FOREIGN KEY (category_id) REFERENCES category(id)
+    FOREIGN KEY (category_id) REFERENCES category(id),
+    notification_type ENUM('SMS', 'EMAIL', 'APP') NOT NULL,
+    template TEXT NOT NULL
 );

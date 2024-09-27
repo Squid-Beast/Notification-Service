@@ -9,10 +9,9 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NotificationDetails {
-    private Long id;
-    private String notificationType;
-    private String notificationTemplate;
-    private Long categoryId;
-    private String subject;
+public class NotificationPreferences {
+    private String category;
+    private boolean smsEnabled;
+    private boolean appEnabled;
+    private boolean emailEnabled;
 }

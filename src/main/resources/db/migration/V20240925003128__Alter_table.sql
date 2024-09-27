@@ -1,4 +1,8 @@
-INSERT INTO notification_template (category, notification_type, template) VALUES
+DELETE FROM notification_template;
+
+ALTER TABLE notification_template AUTO_INCREMENT = 1;
+
+INSERT INTO notification_template (category_id, notification_type, template) VALUES
 (1, 'SMS', 'Your account has been locked due to multiple failed login attempts. Please reset your password.'),
 (1, 'EMAIL', '<!DOCTYPE html>\n<html>\n<head>\n    <title>Password Update Notification</title>\n</head>\n<body>\n    <p>Dear {{accountNumber}},</p>\n    <p>Your password has been successfully updated.</p>\n    <p>If you did not request this change, please contact support.</p>\n    <p>Best regards.</p>\n</body>\n</html>'),
 (1, 'APP', 'We noticed a login from a new location. If this was not you, please secure your account.'),
