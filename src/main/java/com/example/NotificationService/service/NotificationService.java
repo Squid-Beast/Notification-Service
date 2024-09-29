@@ -54,6 +54,7 @@ public class NotificationService {
     public NotificationRequest sendNotification(NotificationRequest notificationRequest) {
 
         validator.validateNotificationRequest(notificationRequest);
+        log.info("Request Validated Successfully.");
 
         UserDetails userDetails = client.getUserDetailsById(notificationRequest.getUserId());
 
@@ -66,11 +67,11 @@ public class NotificationService {
         Category category = categoryOptional.get();
 
         if (userDetails.getUserPreferences().isDisableAllNotifications()) {
-            log.info("User enabled disable all notifications.");
+            log.info("User Enabled Disable All Notifications.");
         }
 
         if (userDetails.getUserPreferences().isCriticalNotificationOnly() && !category.isCritical()) {
-            log.info("User didn't enabled this category as critical.");
+            log.info("User Didn't Enabled This Category As Critical.");
         }
 
         List<NotificationPreferences> notificationPreferencesList = userDetails.getUserPreferences().getNotificationPreferences();
@@ -88,13 +89,13 @@ public class NotificationService {
             log.info(message);
             if (notificationRequest.getNotificationType().contains("SMS")){
                 smsClient.sendSms(userDetails.getMobile(), message);
+                log.info("SMS sent Successfully.");
             }
             if (notificationRequest.getNotificationType().contains("EMAIL")){
                 emailClient.sendEmail(userDetails.getEmail(), template.getSubject(),message);
-                log.info("Email sent Successfully");
+                log.info("Email sent Successfully.");
             }
         }
-
         return notificationRequest;
     }
 
@@ -105,10 +106,9 @@ public class NotificationService {
             Mustache mustache = mustacheFactory.compile(new StringReader(templateContent), "template");
             mustache.execute(writer, data);
         } catch (Exception e) {
-            log.error("Error compiling or executing template", e);
-            return "Error generating message";
+            log.info("Error Compiling or Executing Template.");
+            throw e;
         }
-
         return writer.toString();
     }
 

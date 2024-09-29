@@ -8,6 +8,7 @@ import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,8 +18,11 @@ import java.io.IOException;
 public class EmailClient {
     @Autowired
     private SendGrid sendGridClient;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
     public void sendEmail(String toEmail, String subject, String content) {
-        Email from = new Email("nlohithkumar.18.it@anits.edu.in");
+        Email from = new Email(fromEmail);
         Email to = new Email(toEmail);
         Content emailContent = new Content("text/html", content);
         Mail mail = new Mail(from, subject, to, emailContent);
@@ -29,7 +33,7 @@ public class EmailClient {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             sendGridClient.api(request);
-            log.info("Email sent successfully to {}", toEmail);
+            log.info("Email sent successfully to: {}", toEmail);
         } catch (IOException ex) {
             log.error("Error sending email: {}", ex.getMessage());
         }

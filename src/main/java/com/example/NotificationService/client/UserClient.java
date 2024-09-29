@@ -1,6 +1,8 @@
 package com.example.NotificationService.client;
 
+import com.example.NotificationService.exception.UserDetailsNotFoundException;
 import com.example.NotificationService.pojo.UserDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@Slf4j
 public class UserClient {
     @Autowired
     private RestTemplate restTemplate;
@@ -18,13 +21,17 @@ public class UserClient {
     private String userEndpoint;
 
     public UserDetails getUserDetailsById(Long userId) {
-        ResponseEntity<UserDetails> responseEntity = restTemplate.exchange(
-                userEndpoint + "/" + userId,
-                HttpMethod.GET,
-                buildHttpEntity(),
-                UserDetails.class
-        );
-        return responseEntity.getBody();
+        try {
+            ResponseEntity<UserDetails> responseEntity = restTemplate.exchange(
+                    userEndpoint + "/" + userId,
+                    HttpMethod.GET,
+                    buildHttpEntity(),
+                    UserDetails.class
+            );
+            return responseEntity.getBody();
+        } catch (UserDetailsNotFoundException e) {
+            throw e;
+        }
     }
 
     private HttpEntity buildHttpEntity() {
