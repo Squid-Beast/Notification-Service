@@ -1,0 +1,1 @@
+ALTER TABLE message_log MODIFY message_id VARCHAR(255);

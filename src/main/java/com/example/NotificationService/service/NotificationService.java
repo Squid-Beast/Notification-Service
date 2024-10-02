@@ -5,10 +5,7 @@ import com.example.NotificationService.client.SmsClient;
 import com.example.NotificationService.client.UserClient;
 import com.example.NotificationService.entity.Category;
 import com.example.NotificationService.entity.Notification;
-import com.example.NotificationService.pojo.CategoryDetails;
-import com.example.NotificationService.pojo.NotificationPreferences;
-import com.example.NotificationService.pojo.NotificationRequest;
-import com.example.NotificationService.pojo.UserDetails;
+import com.example.NotificationService.pojo.*;
 import com.example.NotificationService.repository.CategoryRepository;
 import com.example.NotificationService.repository.NotificationTemplateRepository;
 import com.example.NotificationService.validation.NotificationRequestValidator;
@@ -51,7 +48,7 @@ public class NotificationService {
     @Autowired
     private NotificationTemplateRepository notificationTemplateRepository;
 
-    public NotificationRequest sendNotification(NotificationRequest notificationRequest) {
+    public NotificationResponse sendNotification(NotificationRequest notificationRequest) {
 
         validator.validateNotificationRequest(notificationRequest);
         log.info("Request Validated Successfully.");
@@ -96,7 +93,7 @@ public class NotificationService {
                 log.info("Email sent Successfully.");
             }
         }
-        return notificationRequest;
+        return new NotificationResponse("Success");
     }
 
     private String getMessageTemplate(String templateContent, Map<String, Object> data) {

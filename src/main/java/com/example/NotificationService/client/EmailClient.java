@@ -1,7 +1,10 @@
 package com.example.NotificationService.client;
 
+import com.example.NotificationService.entity.MessageLog;
+import com.example.NotificationService.repository.MessageLogRepository;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
+import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
@@ -20,6 +23,9 @@ public class EmailClient {
     private SendGrid sendGridClient;
     @Value("${spring.mail.username}")
     private String fromEmail;
+    @Autowired
+    private MessageLogRepository messageLogRepository;
+    private static final int MAX_RETRY_COUNT = 3;
 
     public void sendEmail(String toEmail, String subject, String content) {
         Email from = new Email(fromEmail);
@@ -28,14 +34,23 @@ public class EmailClient {
         Mail mail = new Mail(from, subject, to, emailContent);
 
         Request request = new Request();
-        try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            sendGridClient.api(request);
-            log.info("Email sent successfully to: {}", toEmail);
-        } catch (IOException ex) {
-            log.error("Error sending email: {}", ex.getMessage());
+        for (int retryCount = 0; retryCount < MAX_RETRY_COUNT; retryCount++){
+            try {
+                request.setMethod(Method.POST);
+                request.setEndpoint("mail/send");
+                request.setBody(mail.build());
+                Response response = sendGridClient.api(request);
+                log.info("Email sent successfully to: {}", toEmail);
+                saveEmailLog(String.valueOf(response.getHeaders()),toEmail,String.valueOf(emailContent),String.valueOf(response.getStatusCode()),retryCount);
+                log.info("EMAIL data saved successfully into database.");
+            } catch (IOException ex) {
+                retryCount++;
+                log.error("Error sending email: {}", ex.getMessage());
+            }
         }
+    }
+    private void saveEmailLog(String messageId, String recipient, String content, String status, int retryCount){
+        MessageLog emailMessageLog = new MessageLog("SendGrid",messageId,recipient,content,status,retryCount);
+        messageLogRepository.save(emailMessageLog);
     }
 }
