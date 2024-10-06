@@ -18,9 +18,10 @@ public class SmsClient {
     @Autowired
     private MessageLogRepository messageLogRepository;
     private static final int MAX_RETRY_COUNT = 3;
+    boolean success = false;
 
     public void sendSms(String toPhoneNumber, String messageContent) {
-        for (int retryCount = 0; retryCount < MAX_RETRY_COUNT; retryCount++){
+        for (int retryCount = 1; retryCount <= MAX_RETRY_COUNT; retryCount++){
             try {
                 Message message = Message.creator(
                         new PhoneNumber(toPhoneNumber),
@@ -30,9 +31,13 @@ public class SmsClient {
                 log.info("SMS sent successfully: {}", message.getSid());
                 saveSmsLog(message.getSid(),toPhoneNumber,messageContent,message.getStatus().toString(),retryCount);
                 log.info("SMS data saved successfully into database.");
+                success = true;
+                break;
             } catch (Exception e) {
-                retryCount++;
                 log.info("Failed to send SMS to: {}",toPhoneNumber,e);
+            }
+            if (retryCount == MAX_RETRY_COUNT && !success){
+                log.info("Failed to send SMS to: {} after {} attempts.",toPhoneNumber,MAX_RETRY_COUNT);
             }
         }
     }

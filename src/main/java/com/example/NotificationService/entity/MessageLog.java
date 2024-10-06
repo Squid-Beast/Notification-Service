@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "message_log")
-@AllArgsConstructor
 public class MessageLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,5 +37,7 @@ public class MessageLog {
         this.content = content;
         this.status = status;
         this.retryCount = retryCount;
+    }
+    public MessageLog() {
     }
 }

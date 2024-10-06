@@ -26,6 +26,7 @@ public class EmailClient {
     @Autowired
     private MessageLogRepository messageLogRepository;
     private static final int MAX_RETRY_COUNT = 3;
+    boolean success = false;
 
     public void sendEmail(String toEmail, String subject, String content) {
         Email from = new Email(fromEmail);
@@ -34,18 +35,27 @@ public class EmailClient {
         Mail mail = new Mail(from, subject, to, emailContent);
 
         Request request = new Request();
-        for (int retryCount = 0; retryCount < MAX_RETRY_COUNT; retryCount++){
+        for (int retryCount = 1; retryCount <= MAX_RETRY_COUNT; retryCount++){
             try {
                 request.setMethod(Method.POST);
                 request.setEndpoint("mail/send");
                 request.setBody(mail.build());
                 Response response = sendGridClient.api(request);
-                log.info("Email sent successfully to: {}", toEmail);
-                saveEmailLog(String.valueOf(response.getHeaders()),toEmail,String.valueOf(emailContent),String.valueOf(response.getStatusCode()),retryCount);
-                log.info("EMAIL data saved successfully into database.");
+                if (response.getStatusCode() >= 200 && response.getStatusCode()<300){
+                    log.info("Email sent successfully to: {}", toEmail);
+                    saveEmailLog(String.valueOf(response.getHeaders()),toEmail,String.valueOf(emailContent),String.valueOf(response.getStatusCode()),retryCount);
+                    log.info("EMAIL data saved successfully into database.");
+                    success = true;
+                    break;
+                }
+                else {
+                    log.info("Error sending email on attempt {}",retryCount);
+                }
             } catch (IOException ex) {
-                retryCount++;
                 log.error("Error sending email: {}", ex.getMessage());
+            }
+            if (retryCount == MAX_RETRY_COUNT && !success){
+                log.info("Failed to send email to: {} after {} attempts.",toEmail,MAX_RETRY_COUNT);
             }
         }
     }

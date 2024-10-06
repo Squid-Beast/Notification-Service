@@ -4,9 +4,11 @@ import com.example.NotificationService.client.EmailClient;
 import com.example.NotificationService.client.SmsClient;
 import com.example.NotificationService.client.UserClient;
 import com.example.NotificationService.entity.Category;
+import com.example.NotificationService.entity.MessageLog;
 import com.example.NotificationService.entity.Notification;
 import com.example.NotificationService.pojo.*;
 import com.example.NotificationService.repository.CategoryRepository;
+import com.example.NotificationService.repository.MessageLogRepository;
 import com.example.NotificationService.repository.NotificationTemplateRepository;
 import com.example.NotificationService.validation.NotificationRequestValidator;
 import com.github.mustachejava.DefaultMustacheFactory;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.StringReader;
@@ -44,6 +47,9 @@ public class NotificationService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private MessageLogRepository messageLogRepository;
 
     @Autowired
     private NotificationTemplateRepository notificationTemplateRepository;
@@ -95,6 +101,27 @@ public class NotificationService {
         }
         return new NotificationResponse("Success");
     }
+
+   @Scheduled(cron = "0 0 0/12 * * ?")
+   public void retryFailedMessages(){
+       List<MessageLog> failedMessages = messageLogRepository.findByStatus("queued");
+       for (MessageLog messageLog : failedMessages){
+           try {
+               if (messageLog.getServiceProvider().equals("Twilio")){
+                   smsClient.sendSms(messageLog.getRecipient(),messageLog.getContent());
+                   log.info("Retrying SMS...");
+                   messageLog.setStatus("success");
+               } else if (messageLog.getServiceProvider().equals("SendGrid")) {
+                   emailClient.sendEmail(messageLog.getRecipient(),"Retrying email with below case",messageLog.getContent());
+                   log.info("Retrying EMAIL...");
+                   messageLog.setStatus("success");
+               }
+               messageLogRepository.save(messageLog);
+           } catch (Exception e) {
+               log.error("Error retrying message with ID: {}",messageLog.getMessageId());
+           }
+       }
+   }
 
     private String getMessageTemplate(String templateContent, Map<String, Object> data) {
         MustacheFactory mustacheFactory = new DefaultMustacheFactory();
