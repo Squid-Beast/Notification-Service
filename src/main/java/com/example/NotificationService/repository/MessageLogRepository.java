@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MessageLogRepository extends JpaRepository<MessageLog,Long> {
+public interface MessageLogRepository extends JpaRepository<MessageLog, Long> {
     List<MessageLog> findByStatus(String status);
 }

@@ -1,7 +1,6 @@
 package com.example.NotificationService.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,6 +37,7 @@ public class MessageLog {
         this.status = status;
         this.retryCount = retryCount;
     }
+
     public MessageLog() {
     }
 }

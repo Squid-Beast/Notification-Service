@@ -18,6 +18,6 @@ public class Notification {
     private String notificationTemplate;
     private String subject;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id",nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 }

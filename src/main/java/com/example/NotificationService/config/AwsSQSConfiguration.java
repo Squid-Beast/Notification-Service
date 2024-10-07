@@ -17,15 +17,14 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
 @EnableJms
 public class AwsSQSConfiguration {
 
-    @Value("${cloud.aws.region}")
-    private String awsRegion;
-
     SQSConnectionFactory connectionFactory = new SQSConnectionFactory(
             new ProviderConfiguration(),
             AmazonSQSClientBuilder.standard()
                     .withRegion(Regions.US_WEST_2)
                     .withCredentials(new DefaultAWSCredentialsProviderChain())
                     .build());
+    @Value("${cloud.aws.region}")
+    private String awsRegion;
 
     @Bean
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {

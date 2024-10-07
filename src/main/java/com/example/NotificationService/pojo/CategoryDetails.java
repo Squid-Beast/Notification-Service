@@ -1,6 +1,5 @@
 package com.example.NotificationService.pojo;
 
-import com.example.NotificationService.entity.Notification;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;

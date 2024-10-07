@@ -20,6 +20,7 @@ public class TwilioConfig {
     public void initTwilio() {
         Twilio.init(accountSid, authToken);
     }
+
     public String getTwilioPhoneNumber() {
         return trialNumber;
     }

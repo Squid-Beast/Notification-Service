@@ -39,5 +39,5 @@ sendgrid:
   api:
     key: ${SENDGRID_API_KEY}
 user:
-    service:
-      endpoint: "http://localhost:8084/user/preferences/"
+  service:
+    endpoint: "http://localhost:8084/user/preferences/"

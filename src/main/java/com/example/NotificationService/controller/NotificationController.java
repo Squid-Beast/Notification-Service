@@ -19,16 +19,16 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @PostMapping("/create")
-    public ResponseEntity<NotificationResponse> createNotificationRequest(@RequestBody NotificationRequest requestDetails){
+    public ResponseEntity<NotificationResponse> createNotificationRequest(@RequestBody NotificationRequest requestDetails) {
         log.info("Created notification request successfully.");
         NotificationResponse response = notificationService.sendNotification(requestDetails);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<UserDetails> getNotificationPreferences(@PathVariable Long userId) {
         log.info("Fetched notifications successfully.");
         UserDetails userNotificationPreferences = notificationService.getNotificationPreferences(userId);
-        return new ResponseEntity<>(userNotificationPreferences,HttpStatus.OK);
+        return new ResponseEntity<>(userNotificationPreferences, HttpStatus.OK);
     }
 }

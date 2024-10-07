@@ -16,5 +16,5 @@ public class NotificationRequest {
     private Long userId;
     private String notificationCategory;
     private List<String> notificationType;
-    private Map<String,String> data;
+    private Map<String, String> data;
 }

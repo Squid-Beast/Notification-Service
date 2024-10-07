@@ -17,7 +17,7 @@ public class NotificationListener {
 
     @JmsListener(destination = "notification-request-queue")
     public void receiveMessage(String message) throws JsonProcessingException {
-        log.info("Received Notification: {}",message);
+        log.info("Received Notification: {}", message);
         ObjectMapper objectMapper = new ObjectMapper();
         NotificationRequest request = objectMapper.readValue(message, NotificationRequest.class);
         notificationService.sendNotification(request);
