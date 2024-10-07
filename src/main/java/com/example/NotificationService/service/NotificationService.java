@@ -123,7 +123,7 @@ public class NotificationService {
     private String getMessageTemplate(String templateContent, Map<String, Object> data) {
         MustacheFactory mustacheFactory = new DefaultMustacheFactory();
         StringWriter writer = new StringWriter();
-        try {
+        try{
             Mustache mustache = mustacheFactory.compile(new StringReader(templateContent), "template");
             mustache.execute(writer, data);
         } catch (Exception e) {
