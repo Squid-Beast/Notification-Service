@@ -28,16 +28,25 @@ spring:
     username: "nlohithkumar.18.it@anits.edu.in"
 cloud:
   aws:
-    region: ${AWS_REGION}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region: us-west-2
     sqs:
-      queue-name: notification-request-queue
+      queue-name: notification-queue
 twilio:
   account_sid: ${TWILIO_ACCOUNT_SID}
   auth_token: ${TWILIO_AUTH_TOKEN}
-  phone_number: ${TWILIO_MOBILE}
+  phone_number: ${TWILIO_PHONE_NUMBER}
 sendgrid:
   api:
     key: ${SENDGRID_API_KEY}
+
 user:
   service:
     endpoint: "http://localhost:8084/user/preferences/"
+management:
+    endpoints:
+        web:
+            exposure:
+                include: [ "prometheus" ]
