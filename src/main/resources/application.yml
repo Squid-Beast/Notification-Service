@@ -46,7 +46,11 @@ user:
   service:
     endpoint: "http://localhost:8084/user/preferences/"
 management:
-    endpoints:
-        web:
-            exposure:
-                include: [ "prometheus" ]
+  endpoints:
+    web:
+      exposure:
+        include: [ "prometheus" ]
+  metrics:
+    export:
+      prometheus:
+        enabled: true
